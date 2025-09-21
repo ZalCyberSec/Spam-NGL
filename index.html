@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spam NGL - Zal PrimroseX</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #4b0038, #0d0d0d 70%);
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .container {
+      background: rgba(15, 15, 25, 0.85);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 0, 90, 0.6), 0 0 45px rgba(180, 0, 255, 0.4);
+      width: 100%;
+      max-width: 420px;
+      backdrop-filter: blur(8px);
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ff4d9d;
+      text-shadow: 0 0 8px rgba(255, 0, 128, 0.8);
+    }
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      display: block;
+      color: #e0c9ff;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(40, 0, 40, 0.7);
+      color: #fff;
+      font-size: 0.95rem;
+      box-shadow: inset 0 0 8px rgba(255, 0, 100, 0.4);
+      transition: all 0.3s ease;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(255, 0, 128, 0.8);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #ff005e, #8000ff);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 12px rgba(255, 0, 128, 0.6);
+    }
+    button:hover {
+      box-shadow: 0 0 20px rgba(255, 0, 128, 1), 0 0 30px rgba(128, 0, 255, 0.8);
+      transform: scale(1.03);
+    }
+    button:disabled {
+      background: #330033;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top: 3px solid #ff4d9d;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .log {
+      margin-top: 20px;
+      background: rgba(20, 0, 30, 0.6);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #f0dfff;
+      max-height: 150px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 12px rgba(128, 0, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-bolt"></i> Spam NGL Primrose Tech</h1>
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Masukkan Username..."><label>Pesan</label>
+<textarea id="message" placeholder="Tulis Pesan..."></textarea>
+
+<label>Jumlah</label>
+<input type="number" id="count" placeholder="Ketik Jumlah Nya..." min="1" value="">
+
+<button id="sendBtn"><i class="fas fa-paper-plane"></i> <b>Kirim</b></button>
+
+<div class="log" id="log"></div>
+
+  </div>  <script>
+    const sendBtn = document.getElementById("sendBtn");
+    const logBox = document.getElementById("log");
+
+    sendBtn.addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim();
+      const message = document.getElementById("message").value.trim();
+      const count = document.getElementById("count").value.trim();
+
+      if (!username || !message || !count) {
+        logBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Harap Isi Semua!';
+        return;
+      }
+
+      sendBtn.disabled = true;
+      const originalHTML = sendBtn.innerHTML;
+      sendBtn.innerHTML = '<div class="spinner"></div> Mengirim...';
+
+      try {
+        const url = `https://7oocode-5mgr.vercel.app/api/spam.js?u=${encodeURIComponent(username)}&m=${encodeURIComponent(message)}&c=${encodeURIComponent(count)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data && data.success) {
+          logBox.innerHTML = `<i class="fas fa-check-circle"></i> Spam berhasil dikirim ke @${username}`;
+        } else {
+          logBox.innerHTML = `<i class="fas fa-times-circle"></i> Gagal: ${JSON.stringify(data)}`;
+        }
+      } catch (err) {
+        logBox.innerHTML = `<i class="fas fa-check-circle"></i> Sukses Mengirim Ke @${username}`;
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = originalHTML;
+      }
+    });
+  </script></body>
+</html>
